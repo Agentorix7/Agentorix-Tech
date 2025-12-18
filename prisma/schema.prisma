@@ -1,0 +1,279 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// User accounts for admin dashboard access only
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  isAdmin      Boolean  @default(false)
+  avatar       String?
+
+  blogs        Blog[]   @relation("BlogAuthor")
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// Services shown across the site. All structured content is stored in JSON to avoid many small tables.
+model Service {
+  id               String   @id @default(uuid())
+  slug             String   @unique
+  title            String
+  shortDescription String
+  overview         String
+  image            String
+  icon             String
+
+  isMainService Boolean @default(false)
+  isActive     Boolean @default(true)
+  displayOrder Int?
+
+  // Rich structured fields mirroring lib/services-data.ts
+  sections    Json? // [{ title, content, items: [] }]
+  features    Json? // [string]
+  benefits    Json? // [string]
+  useCases    Json? // [string]
+  caseStudies Json? // [{ title, description, results: [] }]
+  pricing     Json? // { title, description }
+  cta         Json? // { text, link }
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Industries we serve (used in about/services sections)
+model Industry {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        String
+  description String?
+  image       String?
+
+  services Json? // array of strings describing services per industry
+
+  displayOrder Int?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// Portfolio projects / case examples
+model Portfolio {
+  id          String        @id @default(uuid())
+  slug        String        @unique
+  title       String
+  category    String
+  type        String?       // e.g., "Web Development", "AI Solutions", "Digital Marketing"
+  image       String
+  description String
+  link        String?
+  client      String?       // Client name
+
+  metrics Json? // { label, value, icon }
+  before  Json? // { key: value } object for before metrics
+  after   Json? // { key: value } object for after metrics
+
+  isFeatured   Boolean      @default(false)
+  displayOrder Int?
+  isActive     Boolean      @default(true)
+
+  caseStudies  CaseStudy[]
+  testimonials Testimonial[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Case studies tied to specific portfolio projects
+model CaseStudy {
+  id          String    @id @default(uuid())
+  portfolioId String
+  title       String
+  description String
+  results     Json? // [string]
+
+  displayOrder Int?
+
+  portfolio  Portfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Client testimonials, optionally linked to portfolio projects
+model Testimonial {
+  id          String    @id @default(uuid())
+  portfolioId String?
+
+  name    String
+  role    String
+  company String
+  image   String
+  content String
+  rating  Int
+
+  isFeatured   Boolean @default(false)
+  displayOrder Int?
+  isActive     Boolean @default(true)
+
+  portfolio Portfolio? @relation(fields: [portfolioId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Achievements and certifications combined with a type field
+model AchievementCertification {
+  id   String                     @id @default(uuid())
+  type AchievementCertificationType
+
+  // Achievement-style fields
+  icon         String?
+  title        String?
+  organization String?
+  year         String?
+  description  String?
+  image        String?
+
+  // Certification-style fields
+  name   String?
+  status String?
+  logo   String?
+
+  displayOrder Int?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum AchievementCertificationType {
+  ACHIEVEMENT
+  CERTIFICATION
+}
+
+/// Blog categories
+model BlogCategory {
+  id          String   @id @default(uuid())
+  slug        String   @unique
+  name        String
+  description String?
+
+  blogs Blog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Blog posts (content stored as HTML string, tags as array)
+model Blog {
+  id      String @id @default(uuid())
+  slug    String @unique
+  title   String
+  excerpt String
+  content String // HTML
+  image   String
+
+  categoryId String
+  category   BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  // Author is not a login user; denormalized display fields
+  authorUserId String? // optional link to User if needed
+  author       User?   @relation("BlogAuthor", fields: [authorUserId], references: [id])
+  authorName   String
+  authorAvatar String
+  authorRole   String
+
+  tags        String[]
+  publishedAt DateTime?
+  readTime    Int
+  featured    Boolean  @default(false)
+  isPublished Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Team members shown on the about page (no login)
+model TeamMember {
+  id         String   @id @default(uuid())
+  name       String
+  role       String
+  department String
+  image      String
+  bio        String
+  linkedinUrl String?
+  email       String
+
+  displayOrder Int?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// Contact form submissions from the website
+model ContactSubmission {
+  id      String                 @id @default(uuid())
+  name    String
+  email   String
+  phone   String?
+  subject String
+  message String
+  status  ContactSubmissionStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ContactSubmissionStatus {
+  NEW
+  READ
+  REPLIED
+}
+
+/// Get-a-quote multi-step form submissions
+model QuoteRequest {
+  id                String              @id @default(uuid())
+  name              String
+  email             String
+  phone             String
+  company           String?
+  website           String?
+  services          String[] // selected services
+  projectDescription String
+  timeline          String
+  budget            String
+  status            QuoteRequestStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum QuoteRequestStatus {
+  NEW
+  IN_PROGRESS
+  QUOTED
+  COMPLETED
+}
+
+/// Chatbot leads collected from the live chat widget
+model ChatLead {
+  id          String   @id @default(uuid())
+  name        String?
+  email       String?
+  phone       String?
+  company     String?
+  message     String?  // Last message or conversation summary
+  budget      String?
+  sourcePage  String?  // Page path where lead was collected
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
