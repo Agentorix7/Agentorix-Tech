@@ -15,7 +15,7 @@ const offices = [
     email: process.env.NEXT_PUBLIC_USER_EMAIL|| "",
     hours: "Mon - Fri: 9:00 AM - 6:00 PM PKT",
     timezone: "PKT",
-    mapUrl: "https://www.google.com/maps/place/I-8+Markaz+I+8+Markaz+I-8,+Islamabad/data=!4m2!3m1!1s0x38df95459918a25f:0x46495cfc8ce0a1a3?sa=X&ved=1t:242&ictx=111",
+    mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3318.402474235721!2d73.0309840754282!3d33.6577087383047!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38df95459918a25f%3A0x46495cfc8ce0a1a3!2sI-8%20Markaz%2C%20Islamabad!5e0!3m2!1sen!2s!4v1734530000000",
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop"
   },
 ];
