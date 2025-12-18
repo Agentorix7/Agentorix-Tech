@@ -78,9 +78,9 @@ export function Footer() {
               <div className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                 <span>
-                  Building 40C Office 07, 4th Floor<br />
-                  Main Khayaban-e-Bukhari<br />
-                  DHA Phase 6, Karachi
+                I-8 Markaz,<br />
+                Islamabad 44000,<br />
+                Pakistan.
                 </span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">

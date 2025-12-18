@@ -9,13 +9,13 @@ const offices = [
   {
     id: 1,
     name: "Headquarters",
-    address: "Building 40C Office 07, 4th Floor, Main Khayaban-e-Bukhari, DHA Phase 6, Karachi",
-    city: "Karachi, Pakistan",
+    address: "I-8 Markaz, Islamabad 44000, Pakistan",
+    city: "Islamabad, Pakistan",
     phone: process.env.NEXT_PUBLIC_USER_PHONE|| "",
     email: process.env.NEXT_PUBLIC_USER_EMAIL|| "",
     hours: "Mon - Fri: 9:00 AM - 6:00 PM PKT",
     timezone: "PKT",
-    mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5012.291232314648!2d67.05960709522539!3d24.793725274135653!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33ce94e2c599f%3A0x575c37514a65ffcf!2s40%20Khayaban-e-Bukhari%2C%20D.H.A%20Phase%206%20Bukhari%20Commercial%20Area%20Phase%206%20Defence%20Housing%20Authority%2C%20Karachi%2C%2075500%2C%20Pakistan!5e1!3m2!1sen!2s!4v1765565438641!5m2!1sen!2s",
+    mapUrl: "https://www.google.com/maps/place/I-8+Markaz+I+8+Markaz+I-8,+Islamabad/data=!4m2!3m1!1s0x38df95459918a25f:0x46495cfc8ce0a1a3?sa=X&ved=1t:242&ictx=111",
     image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=600&fit=crop"
   },
 ];
